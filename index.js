@@ -185,7 +185,7 @@ app.put("/cart/:id", (req, res) => {
 
 app.put("/orders/order/:id", (req, res) => {
 
-  console.log(req.body.user_id,req.body.order_status,req.body. order_address,req.body. order_amount,)
+
   const data = {
     user_id: req.body.user_id,
     order_status: req.body.order_status,
@@ -224,32 +224,88 @@ app.post("/orders", (req, res) => {
     }
   );
 });
+
+// Products Crud---------------------->
+
+// Get All Products data
+
+app.get("/products", (req, res) => {
+
+    
+  mysqlConnection.query(`SELECT * FROM products`,(err, rows, fields)=>{
+      if(!err)
+      {res.send(rows);
+          console.log('succeed')}    
+          else
+          console.log(err);
+      })
+    });
+
+    // Get Products data by Spacific id
+    app.get('/products/:id',(req,res)=>{  
+      mysqlConnection.query( `SELECT * FROM products WHERE pro_id = ${req.params.id}`,(err, rows, fields)=>{
+          if(!err)
+          {res.send(rows);
+              console.log('succeed')}    
+              else
+              console.log(err);
+          })
+    
+    })
+
+    // Delate cart data by cart id
+
+      app.delete('/products/:id',(req,res)=>{  
+        mysqlConnection.query( `DELETE  FROM products WHERE pro_id = ${req.params.id}`,(err, rows, fields)=>{
+            if(!err)
+            {res.send(rows);
+                console.log('succeed')}    
+                else
+                console.log(err);
+            })
+
+      })
+
+      // insert into orders 
+        app.post("/products", (req, res) => {
+          const data = {
+            pro_name: req.body. pro_name,
+            pro_price: req.body.pro_price,
+
+           };
+          mysqlConnection.query(
+            `INSERT INTO products ( pro_name,pro_price) VALUES ("${data.pro_name}",${data.pro_price})`,
+            (err, rows, fields) => {
+              if (!err) {
+                console.log("succeed");
+                res.send(rows);
+              } else console.log(err, "errerrrrrrrrrr");
+            }
+          );
+        });
+
+
+        // put product by order_id
+            
+        app.put("/products/:id", (req, res) => {
+          const data = {
+            pro_name: req.body.pro_name,
+            pro_price: req.body.pro_price,
+         
+           };
+          mysqlConnection.query(
+            `UPDATE products SET pro_name='${data.pro_name}',pro_price=${data.pro_price} WHERE pro_id=${req.params.id}`,
+            (err, rows, fields) => {
+              if (!err) {
+                console.log("succeed");
+                res.send(rows);
+              } else console.log(err, "errerrrrrrrrrr");
+            }
+          );
+        });
+
+
  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 app.listen(4000, console.log("Express server is running at port no: 4000"));
